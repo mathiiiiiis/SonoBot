@@ -1,9 +1,8 @@
 FROM node:23.11.0-slim
 
-# Create app directory and set permissions
 WORKDIR /usr/src/app
 
-# Install required system dependencies for canvas
+# Install system dependencies and build tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libcairo2-dev \
@@ -14,31 +13,28 @@ RUN apt-get update && \
     libsodium-dev \
     libopus-dev \
     ffmpeg \
-    curl && \
+    curl \
+    python3 \
+    make \
+    g++ \
+    build-essential && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
-RUN groupadd -r nodejs && useradd -r -g nodejs -s /bin/bash nodejs && \
-    chown -R nodejs:nodejs /usr/src/app
+# Copy package files
+COPY package*.json ./
 
-# Switch to non-root user
-USER nodejs
+# Install dependencies with legacy peer deps to handle compatibility issues
+RUN npm ci --production --unsafe-perm --legacy-peer-deps
 
-# Install dependencies first (caching)
-COPY --chown=nodejs:nodejs package*.json ./
-RUN npm ci --only=production
+# Copy rest of the application
+COPY . .
 
-# Copy app source with correct ownership
-COPY --chown=nodejs:nodejs . .
+# Set Node.js specific environment variables
+ENV NODE_ENV=production
 
 # Add healthcheck
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
-
-# Set Node.js specific environment variables
-ENV NODE_ENV=production \
-    NODE_OPTIONS="--max-old-space-size=2048" \
-    NPM_CONFIG_LOGLEVEL=warn
 
 CMD [ "npm", "start" ]
