@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: sono-bot
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - PREFIX=${PREFIX:-!}
+      - SPAM_THRESHOLD=${SPAM_THRESHOLD:-5}
+      - SPAM_INTERVAL=${SPAM_INTERVAL:-5000}
+      - DEFAULT_TIMEOUT_DURATION=${DEFAULT_TIMEOUT_DURATION:-300000}
+      - WELCOME_CHANNEL=${WELCOME_CHANNEL:-welcome}
+      - MOD_LOG_CHANNEL=${MOD_LOG_CHANNEL:-mod-logs}
+      - DEFAULT_MEMBER_ROLE=${DEFAULT_MEMBER_ROLE}
+    volumes:
+      - ./assets:/usr/src/app/assets
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
