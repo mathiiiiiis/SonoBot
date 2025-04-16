@@ -27,7 +27,7 @@ module.exports = {
     badWords: [
         'nigger', 'bastard', 'hurensohn', 'wixxer', 'xxx', 
         'pornhub.org', 'https://pornhub.org', 'porn', 
-        'kill yourself', 'spotify is better'
+        'kill yourself'
     ],
     
     // Level system settings

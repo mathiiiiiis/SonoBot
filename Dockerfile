@@ -1,25 +1,19 @@
-FROM node:23.11.0-slim
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-# Install only runtime dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libopus0 \
-    libsodium23 \
-    ffmpeg \
-    curl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Copy pre-built application
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy the rest of the application
 COPY . .
 
-# Set Node.js specific environment variables
-ENV NODE_ENV=production
+# Set proper user permissions
+RUN chown -R node:node /usr/src/app
+USER node
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
-
-CMD [ "npm", "start" ]
+# Start the bot
+CMD ["npm", "start"]

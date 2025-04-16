@@ -1,26 +1,27 @@
-version: '3.8'
-
 services:
-  bot:
+  discord-bot:
     build: .
-    container_name: sono-bot
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
+      # Bot Configuration
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
-      - PREFIX=${PREFIX:-!}
-      - SPAM_THRESHOLD=${SPAM_THRESHOLD:-5}
-      - SPAM_INTERVAL=${SPAM_INTERVAL:-5000}
-      - DEFAULT_TIMEOUT_DURATION=${DEFAULT_TIMEOUT_DURATION:-300000}
-      - WELCOME_CHANNEL=${WELCOME_CHANNEL:-welcome}
-      - MOD_LOG_CHANNEL=${MOD_LOG_CHANNEL:-mod-logs}
+      
+      # Bot Settings
+      - PREFIX=${PREFIX}
+      - DEFAULT_COLOR=${DEFAULT_COLOR}
+      - OWNER_ID=${OWNER_ID}
+      
+      # Moderation Settings
+      - SPAM_THRESHOLD=${SPAM_THRESHOLD}
+      - SPAM_INTERVAL=${SPAM_INTERVAL}
+      - DEFAULT_TIMEOUT_DURATION=${DEFAULT_TIMEOUT_DURATION}
+      
+      # Channel Settings
+      - WELCOME_CHANNEL=${WELCOME_CHANNEL}
+      - MOD_LOG_CHANNEL=${MOD_LOG_CHANNEL}
       - DEFAULT_MEMBER_ROLE=${DEFAULT_MEMBER_ROLE}
-    volumes:
-      - ./assets:/usr/src/app/assets
-      - ./node_modules:/usr/src/app/node_modules
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
+      
+      # Level System Settings
+      - BASE_XP=${BASE_XP}
+      - XP_VARIANCE=${XP_VARIANCE}
+      - XP_COOLDOWN=${XP_COOLDOWN}
