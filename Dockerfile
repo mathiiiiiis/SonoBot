@@ -2,32 +2,17 @@ FROM node:23.11.0-slim
 
 WORKDIR /usr/src/app
 
-# Install system dependencies and build tools
+# Install only runtime dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libcairo2-dev \
-    libpango1.0-dev \
-    libjpeg-dev \
-    libgif-dev \
-    librsvg2-dev \
-    libsodium-dev \
-    libopus-dev \
+    libopus0 \
+    libsodium23 \
     ffmpeg \
-    curl \
-    python3 \
-    make \
-    g++ \
-    build-essential && \
+    curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies with legacy peer deps to handle compatibility issues
-RUN npm ci --production --unsafe-perm --legacy-peer-deps
-
-# Copy rest of the application
+# Copy pre-built application
 COPY . .
 
 # Set Node.js specific environment variables

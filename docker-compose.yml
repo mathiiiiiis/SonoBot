@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   bot:
     build: .
@@ -15,6 +17,7 @@ services:
       - DEFAULT_MEMBER_ROLE=${DEFAULT_MEMBER_ROLE}
     volumes:
       - ./assets:/usr/src/app/assets
+      - ./node_modules:/usr/src/app/node_modules
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
