@@ -1,19 +1,19 @@
-FROM node:20-alpine
+FROM node:21-alpine
 
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Install build deps needed for native packages
+RUN apk add --no-cache --virtual .gyp python3 make g++
+
 COPY package*.json ./
 
-# Install dependencies
+# Run npm install
 RUN npm ci --only=production
 
-# Copy the rest of the application
 COPY . .
 
-# Set proper user permissions
+# Set correct permissions
 RUN chown -R node:node /usr/src/app
 USER node
 
-# Start the bot
 CMD ["npm", "start"]
