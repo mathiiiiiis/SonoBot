@@ -20,11 +20,10 @@ module.exports = {
                     .setTitle(`Welcome to ${member.guild.name}!`)
                     .setDescription(`Hey ${member}, we're glad you're here! 
                     
-We hope you enjoy your time in our community.
+Welcome to SODO
                     
-📜 Please check out our <#rules> channel to get started!
-💬 Introduce yourself in <#introductions>!
-🎮 Have fun and be respectful to other members!`)
+📜 Please check out our RULES to get started!
+💬 Introduce yourself in INTRODUCTION!`)
                     .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 256 }))
                     .setImage('attachment://welcome.png')
                     .setFooter({ text: `Member #${member.guild.memberCount}` });
@@ -56,9 +55,9 @@ We hope you enjoy your time in our community.
                     .setDescription(`Hey ${member.user.username}, thanks for joining!
                     
 Here's a quick guide to get you started:
-- Check out the <#rules> channel
-- Introduce yourself in <#introductions>
-- Set your roles in <#roles>
+- Check out the https://discord.com/channels/1361423614066426046/1361426321175216371 channel
+- Introduce yourself in https://discord.com/channels/1361423614066426046/1361426349881037133
+- Set your roles in https://discord.com/channels/1361423614066426046/1362891409233018992
 
 If you have any questions, feel free to ask a moderator or admin!`)
                     .setThumbnail(member.guild.iconURL({ dynamic: true }));

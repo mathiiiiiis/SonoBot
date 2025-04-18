@@ -83,7 +83,7 @@ module.exports = {
         
         // Handle prefix commands if desired (alongside slash commands)
         if (message.content.startsWith(config.prefix)) {
-            // This could be implemented later if needed
+            // TODO: implement prefix command handling
         }
     }
 };

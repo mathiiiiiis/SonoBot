@@ -77,7 +77,11 @@ class CanvasUtils {
         
         // Load and draw avatar
         try {
-            const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ extension: 'png', size: 512 }));
+            const avatar = await Canvas.loadImage(targetUser.displayAvatarURL({ 
+                extension: 'png', 
+                size: 256,
+                forceStatic: true
+            }));
             
             ctx.beginPath();
             ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);

@@ -10,8 +10,8 @@ module.exports = {
     defaultTimeoutDuration: parseInt(process.env.DEFAULT_TIMEOUT_DURATION) || 300000,
     
     // Guild settings
-    welcomeChannelName: process.env.WELCOME_CHANNEL || 'welcome',
-    modLogChannelName: process.env.MOD_LOG_CHANNEL || 'mod-logs',
+    welcomeChannelName: process.env.WELCOME_CHANNEL || '1361426316133666946',
+    modLogChannelName: process.env.MOD_LOG_CHANNEL || '1361432529764094113',
     defaultMemberRole: process.env.DEFAULT_MEMBER_ROLE || '1361426311196835880',
     
     // Custom embed colors

@@ -100,7 +100,7 @@ module.exports = {
                         .setDescription('The role to remove')
                         .setRequired(true))),
 
-    async execute(interaction) {
+    async execute(interaction, client) {
         const subcommand = interaction.options.getSubcommand();
 
         try {
@@ -108,12 +108,29 @@ module.exports = {
                 case 'create': {
                     const title = interaction.options.getString('title');
                     const description = interaction.options.getString('description');
-                    const roles = [
-                        { id: interaction.options.getRole('role1').id, name: interaction.options.getRole('role1').name, emoji: interaction.options.getString('emoji1'), description: '' },
-                        { id: interaction.options.getRole('role2').id, name: interaction.options.getRole('role2').name, emoji: interaction.options.getString('emoji2'), description: '' },
-                        { id: interaction.options.getRole('role3').id, name: interaction.options.getRole('role3').name, emoji: interaction.options.getString('emoji3'), description: '' },
-                        { id: interaction.options.getRole('role4').id, name: interaction.options.getRole('role4').name, emoji: '', description: '' }
-                    ];
+                    const roles = [];
+
+                    // Only add roles that are actually provided
+                    for (let i = 1; i <= 4; i++) {
+                        const role = interaction.options.getRole(`role${i}`);
+                        const emoji = interaction.options.getString(`emoji${i}`);
+                        
+                        if (role) {
+                            roles.push({
+                                id: role.id,
+                                name: role.name,
+                                emoji: emoji || '',
+                                description: ''
+                            });
+                        }
+                    }
+
+                    if (roles.length === 0) {
+                        return interaction.reply({
+                            content: 'You must provide at least one role.',
+                            flags: { ephemeral: true }
+                        });
+                    }
 
                     await reactionRoles.createMenu(
                         interaction.guild.channels.cache.get(interaction.channelId),
@@ -124,7 +141,7 @@ module.exports = {
 
                     await interaction.reply({
                         content: 'Successfully created the reaction role menu!',
-                        ephemeral: true
+                        flags: { ephemeral: true }
                     });
                     break;
                 }
@@ -136,7 +153,7 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
@@ -152,7 +169,7 @@ module.exports = {
                         } catch (error) {
                             return interaction.reply({
                                 content: 'Invalid roles format. Please provide a valid JSON array.',
-                                ephemeral: true
+                                flags: { ephemeral: true }
                             });
                         }
                     }
@@ -162,38 +179,50 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
+                    let message;
                     try {
-                        const message = await channel.messages.fetch(messageId);
-                        await message.delete();
+                        message = await channel.messages.fetch(messageId);
                     } catch (error) {
-                        // Message might not exist anymore, that's ok
+                        return interaction.reply({
+                            content: 'Could not find the message for this menu.',
+                            flags: { ephemeral: true }
+                        });
                     }
 
                     // Create new menu with updated content
                     const newRoles = roles || menu.roles.map(roleId => {
                         const role = interaction.guild.roles.cache.get(roleId);
+                        if (!role) return null;
                         return {
                             id: roleId,
                             name: role.name,
-                            emoji: role.emoji,
-                            description: role.description
+                            emoji: '',
+                            description: ''
                         };
-                    });
+                    }).filter(role => role !== null);
 
+                    // Delete old message first
+                    try {
+                        await message.delete();
+                    } catch (error) {
+                        console.error('Error deleting message:', error);
+                    }
+
+                    // Create new menu
                     await reactionRoles.createMenu(
                         channel,
-                        title || message.embeds[0].title,
-                        description || message.embeds[0].description,
+                        title || (message.embeds[0] ? message.embeds[0].title : 'Reaction Roles'),
+                        description || (message.embeds[0] ? message.embeds[0].description : 'Select a role below'),
                         newRoles
                     );
 
                     await interaction.reply({
                         content: 'Successfully updated the reaction role menu!',
-                        ephemeral: true
+                        flags: { ephemeral: true }
                     });
                     break;
                 }
@@ -208,7 +237,7 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
@@ -217,45 +246,57 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
+                    let message;
                     try {
-                        const message = await channel.messages.fetch(messageId);
-                        await message.delete();
+                        message = await channel.messages.fetch(messageId);
                     } catch (error) {
-                        // Message might not exist anymore, that's ok
+                        return interaction.reply({
+                            content: 'Could not find the message for this menu.',
+                            flags: { ephemeral: true }
+                        });
                     }
 
                     // Add new role to existing roles
                     const existingRoles = menu.roles.map(roleId => {
                         const existingRole = interaction.guild.roles.cache.get(roleId);
+                        if (!existingRole) return null;
                         return {
                             id: roleId,
                             name: existingRole.name,
-                            emoji: existingRole.emoji,
-                            description: existingRole.description
+                            emoji: '',
+                            description: ''
                         };
-                    });
+                    }).filter(role => role !== null);
 
                     existingRoles.push({
                         id: role.id,
                         name: role.name,
-                        emoji: emoji,
-                        description: description
+                        emoji: emoji || '',
+                        description: description || ''
                     });
 
+                    // Delete old message first
+                    try {
+                        await message.delete();
+                    } catch (error) {
+                        console.error('Error deleting message:', error);
+                    }
+
+                    // Create new menu
                     await reactionRoles.createMenu(
                         channel,
-                        message.embeds[0].title,
-                        message.embeds[0].description,
+                        message.embeds[0] ? message.embeds[0].title : 'Reaction Roles',
+                        message.embeds[0] ? message.embeds[0].description : 'Select a role below',
                         existingRoles
                     );
 
                     await interaction.reply({
                         content: `Successfully added the ${role.name} role to the menu!`,
-                        ephemeral: true
+                        flags: { ephemeral: true }
                     });
                     break;
                 }
@@ -268,14 +309,14 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
                     if (!menu.roles.includes(role.id)) {
                         return interaction.reply({
                             content: 'That role is not in this menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
@@ -284,15 +325,18 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            ephemeral: true
+                            flags: { ephemeral: true }
                         });
                     }
 
+                    let message;
                     try {
-                        const message = await channel.messages.fetch(messageId);
-                        await message.delete();
+                        message = await channel.messages.fetch(messageId);
                     } catch (error) {
-                        // Message might not exist anymore, that's ok
+                        return interaction.reply({
+                            content: 'Could not find the message for this menu.',
+                            flags: { ephemeral: true }
+                        });
                     }
 
                     // Remove role from existing roles
@@ -300,24 +344,33 @@ module.exports = {
                         .filter(roleId => roleId !== role.id)
                         .map(roleId => {
                             const existingRole = interaction.guild.roles.cache.get(roleId);
+                            if (!existingRole) return null;
                             return {
                                 id: roleId,
                                 name: existingRole.name,
-                                emoji: existingRole.emoji,
-                                description: existingRole.description
+                                emoji: '',
+                                description: ''
                             };
-                        });
+                        }).filter(role => role !== null);
 
+                    // Delete old message first
+                    try {
+                        await message.delete();
+                    } catch (error) {
+                        console.error('Error deleting message:', error);
+                    }
+
+                    // Create new menu
                     await reactionRoles.createMenu(
                         channel,
-                        message.embeds[0].title,
-                        message.embeds[0].description,
+                        message.embeds[0] ? message.embeds[0].title : 'Reaction Roles',
+                        message.embeds[0] ? message.embeds[0].description : 'Select a role below',
                         existingRoles
                     );
 
                     await interaction.reply({
                         content: `Successfully removed the ${role.name} role from the menu!`,
-                        ephemeral: true
+                        flags: { ephemeral: true }
                     });
                     break;
                 }
@@ -326,7 +379,7 @@ module.exports = {
             console.error('Error in reaction roles command:', error);
             await interaction.reply({
                 content: 'There was an error executing this command.',
-                ephemeral: true
+                flags: { ephemeral: true }
             });
         }
     },

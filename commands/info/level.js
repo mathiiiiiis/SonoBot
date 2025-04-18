@@ -33,21 +33,25 @@ module.exports = {
         const canvas = Canvas.createCanvas(800, 250);
         const ctx = canvas.getContext('2d');
         
-        // Background (Discord dark theme style)
+        // Background
         ctx.fillStyle = '#36393f'; // Discord dark gray
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Add decorative accent (Discord Blurple)
+        // Add decorative accent
         const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        gradient.addColorStop(0, '#5865F2');  // Discord Blurple
-        gradient.addColorStop(1, '#5865F233'); // Transparent
+        gradient.addColorStop(0, '#5865F2');
+        gradient.addColorStop(1, '#5865F233');
         
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, 6); // Top accent
+        ctx.fillRect(0, 0, canvas.width, 6);
         
         // User avatar
         try {
-            const avatar = await Canvas.loadImage(targetUser.displayAvatarURL({ extension: 'png', size: 256 }));
+            const avatar = await Canvas.loadImage(targetUser.displayAvatarURL({ 
+                extension: 'png', 
+                size: 256,
+                forceStatic: true
+            }));
             
             // Create circular avatar
             ctx.save();
@@ -75,16 +79,16 @@ module.exports = {
         
         // Level and Rank
         ctx.font = 'bold 28px Whitney';
-        ctx.fillStyle = '#5865F2';  // Discord Blurple
+        ctx.fillStyle = '#5865F2';
         ctx.fillText(`Level: ${userData.level}`, 250, 130);
         
         // Progress to next level
         ctx.font = '22px Whitney';
-        ctx.fillStyle = '#B9BBBE';  // Discord lighter text color
+        ctx.fillStyle = '#B9BBBE';
         ctx.fillText(`XP: ${progressXP} / ${requiredXP}`, 250, 170);
         
         // XP progress bar background
-        ctx.fillStyle = '#2f3136';  // Discord darker gray
+        ctx.fillStyle = '#2f3136'; 
         const barX = 250;
         const barY = 190;
         const barWidth = 500;
@@ -104,8 +108,8 @@ module.exports = {
         const progressWidth = (progressPercent / 100) * barWidth;
         
         const progressGradient = ctx.createLinearGradient(barX, 0, barX + progressWidth, 0);
-        progressGradient.addColorStop(0, '#5865F2');  // Discord Blurple
-        progressGradient.addColorStop(1, '#57F287');  // Discord Green
+        progressGradient.addColorStop(0, '#5865F2');
+        progressGradient.addColorStop(1, '#57F287');
         
         ctx.fillStyle = progressGradient;
         
@@ -135,7 +139,7 @@ module.exports = {
         // Total message count
         ctx.textAlign = 'right';
         ctx.font = '18px Whitney';
-        ctx.fillStyle = '#72767d';  // Discord muted text color
+        ctx.fillStyle = '#72767d';
         ctx.fillText(`Messages: ${userData.messages}`, canvas.width - 20, 40);
         
         // Convert canvas to attachment

@@ -54,11 +54,16 @@ module.exports = {
             await member.timeout(duration, `${reason} | Timed out by ${interaction.user.tag}`);
 
             // Log the timeout
-            await moderationLogs.logModeration({
-                guildId: interaction.guild.id,
-                action: 'timeout',
-                targetId: user.id,
-                moderatorId: interaction.user.id,
+            await moderationLogs.log(interaction.guild, {
+                type: 'timeout',
+                target: {
+                    id: user.id,
+                    tag: user.tag
+                },
+                moderator: {
+                    id: interaction.user.id,
+                    tag: interaction.user.tag
+                },
                 reason: reason,
                 duration: duration
             });
