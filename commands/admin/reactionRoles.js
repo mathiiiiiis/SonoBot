@@ -128,7 +128,7 @@ module.exports = {
                     if (roles.length === 0) {
                         return interaction.reply({
                             content: 'You must provide at least one role.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -141,7 +141,7 @@ module.exports = {
 
                     await interaction.reply({
                         content: 'Successfully created the reaction role menu!',
-                        flags: { ephemeral: true }
+                        ephemeral: true
                     });
                     break;
                 }
@@ -153,7 +153,7 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -169,7 +169,7 @@ module.exports = {
                         } catch (error) {
                             return interaction.reply({
                                 content: 'Invalid roles format. Please provide a valid JSON array.',
-                                flags: { ephemeral: true }
+                                ephemeral: true
                             });
                         }
                     }
@@ -179,7 +179,7 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -189,7 +189,7 @@ module.exports = {
                     } catch (error) {
                         return interaction.reply({
                             content: 'Could not find the message for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -222,7 +222,7 @@ module.exports = {
 
                     await interaction.reply({
                         content: 'Successfully updated the reaction role menu!',
-                        flags: { ephemeral: true }
+                        ephemeral: true
                     });
                     break;
                 }
@@ -237,7 +237,7 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -246,7 +246,7 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -256,7 +256,7 @@ module.exports = {
                     } catch (error) {
                         return interaction.reply({
                             content: 'Could not find the message for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -296,7 +296,7 @@ module.exports = {
 
                     await interaction.reply({
                         content: `Successfully added the ${role.name} role to the menu!`,
-                        flags: { ephemeral: true }
+                        ephemeral: true
                     });
                     break;
                 }
@@ -309,14 +309,14 @@ module.exports = {
                     if (!menu) {
                         return interaction.reply({
                             content: 'Could not find that reaction role menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
                     if (!menu.roles.includes(role.id)) {
                         return interaction.reply({
                             content: 'That role is not in this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -325,7 +325,7 @@ module.exports = {
                     if (!channel) {
                         return interaction.reply({
                             content: 'Could not find the channel for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -335,7 +335,7 @@ module.exports = {
                     } catch (error) {
                         return interaction.reply({
                             content: 'Could not find the message for this menu.',
-                            flags: { ephemeral: true }
+                            ephemeral: true
                         });
                     }
 
@@ -370,7 +370,7 @@ module.exports = {
 
                     await interaction.reply({
                         content: `Successfully removed the ${role.name} role from the menu!`,
-                        flags: { ephemeral: true }
+                        ephemeral: true
                     });
                     break;
                 }
@@ -379,7 +379,7 @@ module.exports = {
             console.error('Error in reaction roles command:', error);
             await interaction.reply({
                 content: 'There was an error executing this command.',
-                flags: { ephemeral: true }
+                ephemeral: true
             });
         }
     },
