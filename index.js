@@ -1,5 +1,6 @@
 // Main entry point for the Discord bot
 const { Client, GatewayIntentBits, Partials } = require('discord.js');
+require('dotenv').config();
 const config = require('./config');
 const eventHandler = require('./handlers/eventHandler');
 const commandHandler = require('./handlers/commandHandler');
@@ -22,7 +23,7 @@ const client = new Client({
 // Function to ping the status endpoint
 async function pingStatusEndpoint() {
     try {
-        const response = await axios.get('https://status.mathiiis.de/api/push/JEurI7M623?status=up&msg=OK&ping=');
+        const response = await axios.get(process.env.STATUS_ENDPOINT_URL);
         console.log('Status ping sent successfully:', response.status);
     } catch (error) {
         console.error('Failed to ping status endpoint:', error.message);
