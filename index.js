@@ -3,6 +3,7 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const config = require('./config');
 const eventHandler = require('./handlers/eventHandler');
 const commandHandler = require('./handlers/commandHandler');
+const axios = require('axios');
 
 // Create client with all necessary intents
 const client = new Client({
@@ -18,6 +19,16 @@ const client = new Client({
     partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
+// Function to ping the status endpoint
+async function pingStatusEndpoint() {
+    try {
+        const response = await axios.get('https://status.mathiiis.de/api/push/JEurI7M623?status=up&msg=OK&ping=');
+        console.log('Status ping sent successfully:', response.status);
+    } catch (error) {
+        console.error('Failed to ping status endpoint:', error.message);
+    }
+}
+
 // Load events and commands
 (async () => {
     // Initialize handlers
@@ -26,6 +37,12 @@ const client = new Client({
     
     // Login the bot with token
     client.login(config.token);
+    
+    // Set up the status ping interval (20 seconds = 20000 milliseconds)
+    setInterval(pingStatusEndpoint, 20000);
+    
+    // Initial ping when bot starts
+    pingStatusEndpoint();
 })();
 
 process.on('unhandledRejection', (error) => {
